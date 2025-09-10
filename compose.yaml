@@ -11,19 +11,21 @@ services:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
+      - ./docs/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
 
-  app:
-    build: .
-    container_name: lab1_app
+  db-init:
+    image: postgres:16
     depends_on:
-      - db
+      db:
+        condition: service_started
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-mydatabase}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-myuser}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-secret}
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    ports:
-      - "${APP_PORT:-8080}:8080"
+      POSTGRES_DB: ${POSTGRES_DB:-mydatabase}
+      POSTGRES_USER: ${POSTGRES_USER:-myuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+    volumes:
+      - ./docs/schema.sql:/schema.sql:ro
+    entrypoint: ["sh","-c","set -e; echo Esperando DB...; export PGPASSWORD=$POSTGRES_PASSWORD; until pg_isready -h db -U $POSTGRES_USER -d $POSTGRES_DB; do sleep 1; done; echo Aplicando schema...; psql -v ON_ERROR_STOP=1 -h db -U $POSTGRES_USER -d $POSTGRES_DB -f /schema.sql || true; echo Listo schema."]
+    restart: "no"
 
 volumes:
   db-data:

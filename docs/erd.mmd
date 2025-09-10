@@ -1,0 +1,92 @@
+erDiagram
+  VEHICLE {
+    bigint vehicle_id PK
+    text plate
+    text vehicle_type
+    numeric capacity_tons
+    smallint year
+    text note
+    boolean active
+  }
+  DRIVER {
+    bigint driver_id PK
+    text name
+    boolean active
+  }
+  VEHICLE_DRIVER_ASSIGNMENT {
+    bigint assignment_id PK
+    bigint vehicle_id FK
+    bigint driver_id FK
+    date start_date
+    date end_date
+    text note
+  }
+  ROUTE {
+    bigint route_id PK
+    text code
+    text name
+    int km_lineales
+    boolean is_commercial
+  }
+  WASTE_TYPE {
+    bigint waste_type_id PK
+    text code
+    text name
+    text category
+  }
+  FACILITY {
+    bigint facility_id PK
+    text name
+  }
+  ROUTE_WASTE_SCHEDULE {
+    bigint route_id FK
+    bigint waste_type_id FK
+    smallint days_per_week
+  }
+  TRIP {
+    bigint trip_id PK
+    bigint vehicle_id FK
+    bigint driver_id FK
+    bigint route_id FK
+    bigint waste_type_id FK
+    date trip_date
+    numeric hours_in_route
+    text crew
+    int km_start
+    int km_end
+    int total_km
+    text notes
+  }
+  COLLECTION {
+    bigint collection_id PK
+    bigint trip_id FK
+    bigint facility_id FK
+    timestamp measured_at
+    numeric weight_kg
+    text product
+    numeric others_not_recoverable_kg
+  }
+  FUEL_PURCHASE {
+    bigint fuel_id PK
+    bigint vehicle_id FK
+    text invoice_no
+    text po_no
+    text coupon
+    text purchaser_name
+    date date
+    numeric liters
+    numeric amount_crc
+    text month_name
+  }
+
+  VEHICLE ||--o{ VEHICLE_DRIVER_ASSIGNMENT : "has"
+  DRIVER ||--o{ VEHICLE_DRIVER_ASSIGNMENT : "assigned"
+  ROUTE ||--o{ TRIP : "served by"
+  VEHICLE ||--o{ TRIP : "runs"
+  DRIVER ||--o{ TRIP : "drives"
+  WASTE_TYPE ||--o{ TRIP : "collects"
+  TRIP ||--o{ COLLECTION : "records"
+  FACILITY ||--o{ COLLECTION : "weighed at"
+  ROUTE ||--o{ ROUTE_WASTE_SCHEDULE : "plans"
+  WASTE_TYPE ||--o{ ROUTE_WASTE_SCHEDULE : "plans"
+  VEHICLE ||--o{ FUEL_PURCHASE : "fuels"
