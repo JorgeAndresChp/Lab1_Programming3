@@ -1,6 +1,6 @@
 package una.ac.cr.Lab1Progra3.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,11 +12,11 @@ import una.ac.cr.Lab1Progra3.repository.RouteRepository;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class RouteService {
     
-    private final RouteRepository routeRepository;
+    @Autowired
+    private RouteRepository routeRepository;
     
     public Page<RouteDTO> findAll(Pageable pageable) {
         return routeRepository.findAll(pageable)
