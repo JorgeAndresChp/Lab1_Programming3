@@ -35,9 +35,10 @@ public class RouteService {
     }
     
     public Optional<RouteDTO> update(Long id, RouteDTO routeDTO) {
-        return routeRepository.findById(id)
-                .map(existingRoute -> {
-                    existingRoute.setName(routeDTO.getName());
+    return routeRepository.findById(id)
+        .map(existingRoute -> {
+            existingRoute.setName(routeDTO.getName());
+            existingRoute.setObservation(routeDTO.getObservation());
                     existingRoute.setObservation(routeDTO.getObservation());
                     return toDTO(routeRepository.save(existingRoute));
                 });

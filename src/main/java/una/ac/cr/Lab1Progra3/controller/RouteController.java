@@ -49,4 +49,19 @@ public class RouteController {
         createdRoute.put("observation", routeData.get("observation"));
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRoute);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> updateRoute(@PathVariable Long id, @RequestBody Map<String, Object> routeData) {
+        Map<String, Object> updatedRoute = new HashMap<>();
+        updatedRoute.put("id", id);
+        updatedRoute.put("name", routeData.get("name"));
+        updatedRoute.put("observation", routeData.get("observation"));
+        return ResponseEntity.ok(updatedRoute);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRoute(@PathVariable Long id) {
+        // Simulación de borrado
+        return ResponseEntity.noContent().build();
+    }
 }

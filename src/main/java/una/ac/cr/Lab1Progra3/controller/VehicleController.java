@@ -32,10 +32,47 @@ public class VehicleController {
             @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of items per page", example = "10")
             @RequestParam(defaultValue = "10") int size) {
-        
         Pageable pageable = PageRequest.of(page, size);
         Page<Vehicle> vehicles = vehicleRepository.findAll(pageable);
         return ResponseEntity.ok(vehicles);
+    }
+
+    @PostMapping
+    @Operation(summary = "Create a new vehicle", description = "Add a new vehicle to the system")
+    @ApiResponse(responseCode = "201", description = "Vehicle created successfully")
+    public ResponseEntity<Vehicle> createVehicle(@RequestBody Vehicle vehicle) {
+        Vehicle saved = vehicleRepository.save(vehicle);
+        return ResponseEntity.status(201).body(saved);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a vehicle", description = "Update an existing vehicle by ID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Vehicle updated successfully"),
+        @ApiResponse(responseCode = "404", description = "Vehicle not found")
+    })
+    public ResponseEntity<Vehicle> updateVehicle(@PathVariable Long id, @RequestBody Vehicle vehicle) {
+        return vehicleRepository.findById(id)
+                .map(existing -> {
+                    vehicle.setId(id);
+                    Vehicle updated = vehicleRepository.save(vehicle);
+                    return ResponseEntity.ok(updated);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a vehicle", description = "Delete a vehicle by ID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Vehicle deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "Vehicle not found")
+    })
+    public ResponseEntity<Void> deleteVehicle(@PathVariable Long id) {
+        if (vehicleRepository.existsById(id)) {
+            vehicleRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
     
     @GetMapping("/{id}")
