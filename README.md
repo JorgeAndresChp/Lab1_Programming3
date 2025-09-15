@@ -38,3 +38,5 @@ Endpoints:
 
 ## Aprendizaje 
 Se logró aprender como funciona la jerarquía que hay en Controller -> Service -> Repository y como esta se ve ya en la API e influye en esta. También la hora de analizar datos para extraer potenciales entidades y construir una DB en base a eso y el uso de IA para despejar dudas y lograr bien las conexiones de entidades.
+Se aprendió el uso de Swagger para la conexión con los endpoints, y entender mejor de manera visual todo lo que hay a mano para trabajar con estos.
+Se entendió la manipulación de la API REST como entorno de backend.
