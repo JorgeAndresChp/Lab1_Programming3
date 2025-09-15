@@ -16,6 +16,8 @@ Repositorio del laboratorio: normalización de datos, PostgreSQL y API REST con 
 
 Endpoints:
 - Salud: GET http://localhost:8080/health
+- Vehiculo: POST http://localhost:8080/vehicle
+- Conductor: POST http://localhost:8080/driver
 - Swagger UI: http://localhost:8080/swagger-ui.html
 
 ## Ejecutar con Docker Compose
@@ -34,9 +36,5 @@ Endpoints:
   - erd.png (diagrama ER)
   - schema.sql (DDL final)
 
-## Normalización y Modelo de Datos
-Agrega en `docs/normalization.md` el análisis de las hojas Excel, entidades, claves, dependencias, y justificación hasta 3FN. Exporta el esquema final a `docs/schema.sql` y el diagrama como `docs/erd.png`.
-
-## Notas
-- Hibernate está configurado con `ddl-auto=update` para desarrollo. Para producción, migra a herramientas como Flyway o Liquibase.
-- El API no requiere autenticación según enunciado.
+## Aprendizaje 
+Se logró aprender como funciona la jerarquía que hay en Controller -> Service -> Repository y como esta se ve ya en la API e influye en esta. También la hora de analizar datos para extraer potenciales entidades y construir una DB en base a eso y el uso de IA para despejar dudas y lograr bien las conexiones de entidades.
