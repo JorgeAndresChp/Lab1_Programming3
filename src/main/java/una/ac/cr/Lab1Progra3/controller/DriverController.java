@@ -1,11 +1,18 @@
 package una.ac.cr.Lab1Progra3.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import una.ac.cr.Lab1Progra3.dto.DriverDTO;
+import una.ac.cr.Lab1Progra3.entity.Driver;
+import una.ac.cr.Lab1Progra3.repository.DriverRepository;
 import una.ac.cr.Lab1Progra3.service.DriverService;
-import java.util.List;
+
+
 
 @RestController
 @RequestMapping("/api/drivers")
@@ -13,10 +20,8 @@ public class DriverController {
     @Autowired
     private DriverService driverService;
 
-    @GetMapping
-    public List<DriverDTO> getAllDrivers() {
-        return driverService.getAllDrivers();
-    }
+    @Autowired
+    private DriverRepository driverRepository;
 
     @GetMapping("/{id}")
     public ResponseEntity<DriverDTO> getDriverById(@PathVariable Long id) {
@@ -25,12 +30,30 @@ public class DriverController {
     }
 
     @PostMapping
-    public DriverDTO createDriver(@RequestBody DriverDTO driverDTO) {
+    public DriverDTO createDriver(@Valid @RequestBody DriverDTO driverDTO) {
         return driverService.createDriver(driverDTO);
     }
 
+    // Endpoint paginado con filtro opcional por nombre
+    @GetMapping
+    public ResponseEntity<Page<DriverDTO>> list(
+        @RequestParam(required = false) String name,
+        @PageableDefault(size = 20, sort = "id") Pageable pageable) {
+
+    Page<Driver> page = (name != null && !name.isBlank())
+        ? driverRepository.findByNameContainingIgnoreCase(name, pageable)
+        : driverRepository.findAll(pageable);
+
+    Page<DriverDTO> dtoPage = page.map(d ->
+        DriverDTO.builder()
+            .id(d.getId())
+            .name(d.getName())
+            .build()
+    );
+    return ResponseEntity.ok(dtoPage);
+    }
     @PutMapping("/{id}")
-    public ResponseEntity<DriverDTO> updateDriver(@PathVariable Long id, @RequestBody DriverDTO driverDTO) {
+    public ResponseEntity<DriverDTO> updateDriver(@PathVariable Long id, @Valid @RequestBody DriverDTO driverDTO) {
         DriverDTO updated = driverService.updateDriver(id, driverDTO);
         return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }

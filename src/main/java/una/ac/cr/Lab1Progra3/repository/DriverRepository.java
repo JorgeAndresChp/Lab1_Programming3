@@ -13,4 +13,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
     
     @Query("SELECT d FROM Driver d WHERE d.name LIKE %:name%")
     Page<Driver> findByNameContaining(@Param("name") String name, Pageable pageable);
+
+    // Variante case-insensitive usando derivación de nombre de método
+    Page<Driver> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }
