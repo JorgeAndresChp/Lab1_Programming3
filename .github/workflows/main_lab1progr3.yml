@@ -25,6 +25,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: Make Maven Wrapper executable
+        run: chmod +x mvnw
+
       - name: Build with Maven (skip tests)
         run: ./mvnw -B -DskipTests package
 
@@ -62,4 +65,4 @@ jobs:
           app-name: 'Lab1Progr3'
           slot-name: 'Production'
           package: './artifact/*.jar'
-          
+
