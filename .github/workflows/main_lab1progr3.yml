@@ -50,8 +50,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: java-app
+          path: java-app
 
-      - name: Azure login
+      - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -59,9 +60,10 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Set App Settings (DB + JPA)
-        uses: azure/CLI@v2
+        uses: azure/CLI@v1
         with:
           inlineScript: |
+            set -e
             az webapp config appsettings set \
               --resource-group "$RESOURCE_GROUP" \
               --name "$WEBAPP_NAME" \
@@ -70,13 +72,14 @@ jobs:
               SPRING_DATASOURCE_USERNAME="${DB_USER:-myuser}" \
               SPRING_DATASOURCE_PASSWORD="${DB_PASSWORD:-secret}" \
               SPRING_JPA_HIBERNATE_DDL_AUTO="update" \
-              SERVER_PORT="8080"
+              SERVER_PORT="8080" \
+              WEBSITES_PORT="8080"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.WEBAPP_NAME }}
           slot-name: production
-          package: '*.jar'
+          package: java-app/*.jar
 
 
