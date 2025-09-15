@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: target/*.jar
+          path: target
           retention-days: 3
 
   deploy:
@@ -64,5 +64,6 @@ jobs:
         with:
           app-name: 'Lab1Progr3'
           slot-name: 'Production'
-          package: './artifact/*.jar'
+          package: './artifact/java-app/*.jar'
+
 
